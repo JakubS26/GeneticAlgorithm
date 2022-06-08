@@ -51,4 +51,18 @@ public class Utils {
         }
         tab[dest] = temp;
     }
+
+    public  static int findIndex(double val, double[] arr) {
+        int beg = 0;
+        int end = arr.length;
+        while (beg < end) {
+            int med = beg + (end - beg) / 2;
+            if (val <= arr[med]) {
+                end = med;
+            } else {
+                beg = med + 1;
+            }
+        }
+        return beg;
+    }
 }
