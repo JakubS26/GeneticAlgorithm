@@ -33,7 +33,7 @@ public class RouletteSelect implements SelectionMethod {
         this.cdfTable = new double[population.size()];
         this.cdfTable[0] = ((double) bestLength / population.get(0).getPathLen()) * greatestWidth;
         for (int i = 1; i < population.size(); i++) {
-            this.cdfTable[i] = ((double) bestLength / population.get(i).getPathLen()) * greatestWidth;
+            this.cdfTable[i] = this.cdfTable[i - 1] + ((double) bestLength / population.get(i).getPathLen()) * greatestWidth;
         }
     }
 
