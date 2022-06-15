@@ -42,7 +42,7 @@ public class OrderCrossover extends AbstractOperator {
 			cutPoint1 = temp;
 		}
 		
-		System.out.println("Wybrano punkty podziału: " + cutPoint1 + ", " + cutPoint2);
+		//System.out.println("Wybrano punkty podziału: " + cutPoint1 + ", " + cutPoint2);
 		
 		for(int i=cutPoint1; i<=cutPoint2; i++) {
 			offspring1.vertices[i] = parent1.vertices[i];
