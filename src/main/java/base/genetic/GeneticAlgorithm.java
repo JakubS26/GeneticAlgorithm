@@ -56,7 +56,7 @@ public class GeneticAlgorithm {
 		ArrayList<Path> population = new ArrayList<Path>();
 		
 		newPath = Paths.randomPath(matrix);
-		population.add(newPath);
+		population.add(newPath); 
 		bestPath = newPath;
 		bestObjFunction = matrix.objectiveFunction(bestPath);
 		
