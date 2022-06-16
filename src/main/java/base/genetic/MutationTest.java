@@ -3,6 +3,7 @@ package base.genetic;
 import base.Matrices;
 import base.heuristics.Paths;
 import base.*;
+import java.util.ArrayList;
 
 public class MutationTest {
 	public static void main(String args[]) {

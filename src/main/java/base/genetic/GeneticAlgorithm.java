@@ -17,12 +17,13 @@ public class GeneticAlgorithm {
 	private int parents;
 	private double repProb;
 	private double mutProb;
+	private double memProb;
 	private CrossType crossover;
 	private int selectionType;
 	private Random rand;
 	
 	public GeneticAlgorithm(Matrix matrix, int popSize, int generations, int opt, int parents,
-							double repProb, double mutProb, CrossType crossover, int selectionType) {
+							double repProb, double mutProb, double memProb, CrossType crossover, int selectionType) {
 		this.matrix = matrix;
 		this.popSize = popSize;
 		this.generations = generations;
@@ -32,6 +33,7 @@ public class GeneticAlgorithm {
 				this.parents++;
 		this.repProb = repProb;
 		this.mutProb = mutProb;
+		this.memProb = memProb;
 		this.crossover = crossover;
 		this.selectionType = selectionType;
 		this.rand = new Random();
@@ -39,8 +41,9 @@ public class GeneticAlgorithm {
 	
 	public Path solve() {
 		
-		
 		AbstractOperator crossOperator = CrossFactory.getCrossover(crossover);
+		
+		Memetic memetic = new Memetic(matrix, 5);
 		
 		//Najlepsze rozwiązanie znalezione w trakcie działania algorytmu
 		
@@ -65,6 +68,13 @@ public class GeneticAlgorithm {
 				bestPath = newPath;
 				bestObjFunction = matrix.objectiveFunction(newPath);
 			}
+		}
+		
+		int elite = 3500;
+		
+		for(int i=1; i<=elite; i++) {
+			Path improved = memetic.solve(population.get(i));
+			population.set(i, improved);
 		}
 		
 		//Ustawiamy metodę selekcji rodziców
@@ -102,13 +112,13 @@ public class GeneticAlgorithm {
 					offspring = crossOperator.reproduce(parentsPop.get(j), parentsPop.get(j+1));
 					
 					if(this.matrix.objectiveFunction(offspring[0].vertices) < bestObjFunction) {
-						System.out.println("cross");
+						//System.out.println("cross");
 						bestPath = offspring[0];
 						bestObjFunction = this.matrix.objectiveFunction(offspring[0].vertices);
 						System.out.println(i + ". " + bestObjFunction + " "  + 100.0*(double)(bestObjFunction-opt)/(double)opt + " %");
 					}
 					if(this.matrix.objectiveFunction(offspring[1].vertices) < bestObjFunction) {
-						System.out.println("cross");
+						//System.out.println("cross");
 						bestPath = offspring[1];
 						bestObjFunction = this.matrix.objectiveFunction(offspring[1].vertices);
 						System.out.println(i + ". " + bestObjFunction + " "  + 100.0*(double)(bestObjFunction-opt)/(double)opt + " %");
@@ -124,12 +134,24 @@ public class GeneticAlgorithm {
 			for(int j=0; j<=population.size()-1; j++) {
 				Mutation.mutate(population.get(j), mutProb, this.matrix);
 				if(population.get(j).getPathLen() < bestObjFunction) {
-					System.out.println("mut");
+					//System.out.println("mut");
 					bestPath = population.get(j);
 					bestObjFunction = population.get(j).getPathLen();
 					System.out.println(i + ". " + bestObjFunction + " "  + 100.0*(double)(bestObjFunction-opt)/(double)opt + " %");
 				}
 			}
+			
+			//Przeprowadzamy "uczenie się" osobników
+			
+//			for(int j=0; j<=population.size()-1; j++) {
+//				
+//				double x = rand.nextDouble();
+//				if(x <= memProb) {
+//					Path improved = memetic.solve(population.get(j));
+//					population.remove(j);
+//					population.add(j, improved);
+//				}
+//			}
 			
 			//Przeprowadzamy powtórną selekcję (część osobników ginie), rozmiar populacji wraca do początkowego
 			//Póki co powtórna selekcja jest przeprowadzana losowo
