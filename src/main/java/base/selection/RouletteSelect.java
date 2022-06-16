@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Random;
 
 public class RouletteSelect implements SelectionMethod {
-    private static final int greatestWidth = 10;
+    private static final int greatestWidth = 1000;
     private final List<Path> population;
     private final Matrix matrix;
-    private double[] cdfTable;
+    private int[] cdfTable;
 
     public RouletteSelect(List<Path> population, Matrix matrix) {
         this.population = population;
@@ -30,17 +30,17 @@ public class RouletteSelect implements SelectionMethod {
                 bestLength = path.getPathLen();
             }
         }
-        this.cdfTable = new double[population.size()];
-        this.cdfTable[0] = ((double) bestLength / population.get(0).getPathLen()) * greatestWidth;
+        this.cdfTable = new int[population.size()];
+        this.cdfTable[0] = ((bestLength * greatestWidth) / population.get(0).getPathLen()) ;
         for (int i = 1; i < population.size(); i++) {
-            this.cdfTable[i] = this.cdfTable[i - 1] + ((double) bestLength / population.get(i).getPathLen()) * greatestWidth;
+            this.cdfTable[i] = this.cdfTable[i - 1] + ((bestLength * greatestWidth) / population.get(i).getPathLen());
         }
     }
 
     @Override
     public Path select() {
         Random random = new Random();
-        double val = random.nextDouble(this.cdfTable[cdfTable.length - 1]);
+        double val = random.nextInt(this.cdfTable[cdfTable.length - 1] + 1);
         int index = Utils.findIndex(val, this.cdfTable);
         if (index >= this.cdfTable.length) {
             return null;

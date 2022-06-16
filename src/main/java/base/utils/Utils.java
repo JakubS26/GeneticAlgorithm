@@ -52,7 +52,7 @@ public class Utils {
         tab[dest] = temp;
     }
 
-    public  static int findIndex(double val, double[] arr) {
+    public  static int findIndex(double val, int[] arr) {
         int beg = 0;
         int end = arr.length;
         while (beg < end) {
