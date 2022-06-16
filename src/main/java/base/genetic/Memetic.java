@@ -24,7 +24,7 @@ public class Memetic {
         Path loopBestPath = startPath;
         int i = iterations;
         
-        while (i >= 1) {
+        while (i >= 1) { 
             while (hood.hasNext()) {
                 IndexedPath tempPath = hood.getNext();
                 if (tempPath.getLength() < loopBestLength) {

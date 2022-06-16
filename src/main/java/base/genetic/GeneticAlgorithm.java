@@ -69,7 +69,7 @@ public class GeneticAlgorithm {
 				bestObjFunction = matrix.objectiveFunction(newPath);
 			}
 		}
-		
+		 
 		int elite = 3500;
 		
 		for(int i=1; i<=elite; i++) {
