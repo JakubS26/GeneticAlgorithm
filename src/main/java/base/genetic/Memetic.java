@@ -31,13 +31,13 @@ public class Memetic {
                     loopBestPath = tempPath.getPath();
                     loopBestLength = tempPath.getLength();
                 }
-                i--;
             }
             if (loopBestLength < bestLength) {
                 hood = new TwoOptNeighbourhood(this.matrix, loopBestPath);
                 bestPath = loopBestPath;
                 bestLength = loopBestLength;
-            }    
+            }
+            i--;
         }
         bestPath.setPathLen(matrix.objectiveFunction(bestPath));
         return bestPath;

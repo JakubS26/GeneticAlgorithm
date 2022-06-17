@@ -43,7 +43,8 @@ public class GeneticAlgorithm {
 		
 		AbstractOperator crossOperator = CrossFactory.getCrossover(crossover);
 		
-		Memetic memetic = new Memetic(matrix, 5);
+		Memetic memetic = new Memetic(matrix, 10);
+		
 		
 		//Najlepsze rozwiązanie znalezione w trakcie działania algorytmu
 		
@@ -63,19 +64,28 @@ public class GeneticAlgorithm {
 		for(int i=1; i<=popSize-1; i++) {
 			newPath = Paths.randomPath(matrix);
 			population.add(newPath);
-			//newPath.print();
 			if(matrix.objectiveFunction(newPath) < bestObjFunction) {
 				bestPath = newPath;
 				bestObjFunction = matrix.objectiveFunction(newPath);
 			}
 		}
 		 
-		int elite = 3500;
+		int elite = popSize;
 		
-		for(int i=1; i<=elite; i++) {
+		for(int i=0; i<=elite-1; i++) {
 			Path improved = memetic.solve(population.get(i));
 			population.set(i, improved);
 		}
+				
+		for(int i=0; i<=population.size()-1; i++) {
+			int obj = matrix.objectiveFunction(population.get(i));
+			if(obj < bestObjFunction) {
+				bestPath = population.get(i);
+				bestObjFunction = obj;
+			}
+		}
+		
+		memetic = new Memetic(matrix, 5);
 		
 		//Ustawiamy metodę selekcji rodziców
 		
@@ -90,7 +100,7 @@ public class GeneticAlgorithm {
 		ArrayList<Path> parentsPop = new ArrayList<Path>();
 		Path offspring[] = null;
 		
-		//Główna pętla programu (liczba pokoleń)
+		//GŁÓWNA PĘTLA PROGRAMU (liczba pokoleń)
 		
 		for(int i=1; i<=generations; i++) {
 			
@@ -143,22 +153,45 @@ public class GeneticAlgorithm {
 			
 			//Przeprowadzamy "uczenie się" osobników
 			
-//			for(int j=0; j<=population.size()-1; j++) {
-//				
-//				double x = rand.nextDouble();
-//				if(x <= memProb) {
-//					Path improved = memetic.solve(population.get(j));
-//					population.remove(j);
-//					population.add(j, improved);
-//				}
-//			}
+			for(int j=0; j<=population.size()-1; j++) {
+				
+				double x = rand.nextDouble();
+				if(x <= memProb) {
+					Path improved = memetic.solve(population.get(j));
+					if(matrix.objectiveFunction(improved) < bestObjFunction) {
+						//System.out.println("mem");
+						bestPath = improved;
+						bestObjFunction = matrix.objectiveFunction(improved);
+						System.out.println(i + ". " + bestObjFunction + " "  + 100.0*(double)(bestObjFunction-opt)/(double)opt + " %");
+					}
+					population.remove(j);
+					population.add(j, improved);
+				}
+			}
 			
 			//Przeprowadzamy powtórną selekcję (część osobników ginie), rozmiar populacji wraca do początkowego
-			//Póki co powtórna selekcja jest przeprowadzana losowo
 			
-			while(population.size() > popSize) {
-				int index = rand.nextInt(population.size());
-				population.remove(index);
+//			while(population.size() > popSize) {
+//				int index = rand.nextInt(population.size());
+//				population.remove(index);
+//			}
+			
+			ArrayList<Path> newPopulation = new ArrayList<Path>();
+			SelectionMethod selection2 = new TournamentSelect(this.matrix, population);
+			
+			Path p;
+			
+			for(int j=1; j<=popSize; j++) {
+				p = selection2.select();
+				population.remove(p);
+				newPopulation.add(p);
+			}
+			
+			population = newPopulation;
+			selection = new TournamentSelect(this.matrix, newPopulation);
+			
+			if(bestObjFunction == opt) {
+				break;
 			}
 			
 		}
