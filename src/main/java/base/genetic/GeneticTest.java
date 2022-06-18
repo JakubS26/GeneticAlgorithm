@@ -19,11 +19,11 @@ public class GeneticTest {
 		String br17 = "/home/jakub_s/AlgMeta/TSP/ALL_atsp/br17.atsp";			//opt = 39
 		String ft70 = "/home/jakub_s/AlgMeta/TSP/ALL_atsp/ft70.atsp";			//opt = 38673
 				
-		ProblemInstance pi = new ProblemInstance(ft70);
+		ProblemInstance pi = new ProblemInstance(gr120);
 		
 		Matrix m  = InstanceReader.read(pi);
 		
-		GeneticAlgorithm ga = new GeneticAlgorithm(m, 1000, 1000, 38673, 700, 1.0, 0.1, 1.0, CrossType.PMX, 1);
+		GeneticAlgorithm ga = new GeneticAlgorithm(m, 500, 1000, 6942, 300, 1.0, 0.1, 0.1, CrossType.PMX, 1);
 		Path solution = ga.solve();
 		
 		solution.print();

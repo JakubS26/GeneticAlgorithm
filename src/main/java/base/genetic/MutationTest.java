@@ -10,11 +10,21 @@ public class MutationTest {
 		
 		Matrix m = Matrices.randomSeedSymmetricTSP(25, 851345);
 		
-		for(int i=1; i<=30; i++) {
-			Path p = Paths.randomPath(m);
+		ArrayList<Path> list = new ArrayList<Path>();
+		
+		for(int i=0; i<=4; i++) {
+			list.add(Paths.randomPath(m));
+		}
+		
+		for(int i=0; i<=4; i++) {
+			Path p = list.get(i);
 			p.print();
-			Mutation.mutate(p, 0.5, m);
+			System.out.println(m.objectiveFunction(p));
+			System.out.println(p.getPathLen());
+			Mutation.mutate(list.get(i), 0.5, m);
 			p.print();
+			System.out.println(m.objectiveFunction(p));
+			System.out.println(p.getPathLen());
 			System.out.println();
 		}
 		

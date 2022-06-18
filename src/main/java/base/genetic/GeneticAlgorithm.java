@@ -142,9 +142,16 @@ public class GeneticAlgorithm {
 			//Przeprowadzamy mutację (z pewnym ppb) wszystkich osobników
 			
 			for(int j=0; j<=population.size()-1; j++) {
-				Mutation.mutate(population.get(j), mutProb, this.matrix);
+
+				Path mutated = Mutation.mutate(population.get(j), mutProb, this.matrix);
+				population.set(j, mutated);
+				
+				if(matrix.objectiveFunction(bestPath) != bestObjFunction) {
+					System.out.println("ERR1" + ",  " + matrix.objectiveFunction(bestPath) + ",  " + bestObjFunction);
+					System.exit(1);
+				}
+				
 				if(population.get(j).getPathLen() < bestObjFunction) {
-					//System.out.println("mut");
 					bestPath = population.get(j);
 					bestObjFunction = population.get(j).getPathLen();
 					System.out.println(i + ". " + bestObjFunction + " "  + 100.0*(double)(bestObjFunction-opt)/(double)opt + " %");
@@ -159,23 +166,17 @@ public class GeneticAlgorithm {
 				if(x <= memProb) {
 					Path improved = memetic.solve(population.get(j));
 					if(matrix.objectiveFunction(improved) < bestObjFunction) {
-						//System.out.println("mem");
+						System.out.println("mem");
 						bestPath = improved;
 						bestObjFunction = matrix.objectiveFunction(improved);
 						System.out.println(i + ". " + bestObjFunction + " "  + 100.0*(double)(bestObjFunction-opt)/(double)opt + " %");
 					}
-					population.remove(j);
-					population.add(j, improved);
+					population.set(j, improved);
 				}
 			}
 			
 			//Przeprowadzamy powtórną selekcję (część osobników ginie), rozmiar populacji wraca do początkowego
-			
-//			while(population.size() > popSize) {
-//				int index = rand.nextInt(population.size());
-//				population.remove(index);
-//			}
-			
+						
 			ArrayList<Path> newPopulation = new ArrayList<Path>();
 			SelectionMethod selection2 = new TournamentSelect(this.matrix, population);
 			
@@ -190,12 +191,18 @@ public class GeneticAlgorithm {
 			population = newPopulation;
 			selection = new TournamentSelect(this.matrix, newPopulation);
 			
+			if(matrix.objectiveFunction(bestPath) != bestObjFunction) {
+				System.out.println(i + ".  ERR");
+			}
+			
 			if(bestObjFunction == opt) {
 				break;
 			}
 			
 		}
 		
+		System.out.println(bestObjFunction);
+		System.out.println(matrix.objectiveFunction(bestPath));
 		return bestPath;
 	}
 	
