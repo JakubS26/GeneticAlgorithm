@@ -5,7 +5,6 @@ import base.selection.*;
 import base.heuristics.Paths;
 import base.operators.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class GeneticAlgorithm {
@@ -19,11 +18,11 @@ public class GeneticAlgorithm {
 	private double mutProb;
 	private double memProb;
 	private CrossType crossover;
-	private int selectionType;
+	private SelectionMethods.Method selectionType;
 	private Random rand;
 	
 	public GeneticAlgorithm(Matrix matrix, int popSize, int generations, int opt, int parents,
-							double repProb, double mutProb, double memProb, CrossType crossover, int selectionType) {
+							double repProb, double mutProb, double memProb, CrossType crossover, SelectionMethods.Method selectionType) {
 		this.matrix = matrix;
 		this.popSize = popSize;
 		this.generations = generations;
@@ -91,11 +90,7 @@ public class GeneticAlgorithm {
 		
 		SelectionMethod selection;
 		
-		if(this.selectionType == 0) {
-			selection = new RouletteSelect(population, this.matrix);
-		} else {
-			selection = new TournamentSelect(this.matrix, population);
-		}
+		selection = SelectionMethods.getMethod(this.matrix, population, selectionType);
 		
 		ArrayList<Path> parentsPop = new ArrayList<Path>();
 		Path offspring[] = null;
@@ -189,7 +184,8 @@ public class GeneticAlgorithm {
 			}
 			
 			population = newPopulation;
-			selection = new TournamentSelect(this.matrix, newPopulation);
+			selection = SelectionMethods.getMethod(this.matrix, population, selectionType);
+			//selection = new TournamentSelect(this.matrix, newPopulation);
 			
 			if(matrix.objectiveFunction(bestPath) != bestObjFunction) {
 				System.out.println(i + ".  ERR");

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 public class RouletteSelect implements SelectionMethod {
-    private static final int greatestWidth = 1000;
+    private static final int greatestWidth = 10;
     private final List<Path> population;
     private final Matrix matrix;
     private int[] cdfTable;
@@ -40,7 +40,7 @@ public class RouletteSelect implements SelectionMethod {
     @Override
     public Path select() {
         Random random = new Random();
-        double val = random.nextInt(this.cdfTable[cdfTable.length - 1] + 1);
+        double val = random.nextDouble() * this.cdfTable[cdfTable.length - 1];
         int index = Utils.findIndex(val, this.cdfTable);
         if (index >= this.cdfTable.length) {
             return null;

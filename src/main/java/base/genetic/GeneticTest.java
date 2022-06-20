@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import base.*;
 import base.operators.CrossType;
 import base.reader.*;
+import base.selection.SelectionMethods;
 
 public class GeneticTest {
 
@@ -23,7 +24,7 @@ public class GeneticTest {
 		
 		Matrix m  = InstanceReader.read(pi);
 		
-		GeneticAlgorithm ga = new GeneticAlgorithm(m, 500, 1000, 6942, 300, 1.0, 0.1, 0.1, CrossType.PMX, 1);
+		GeneticAlgorithm ga = new GeneticAlgorithm(m, 500, 1000, 6942, 300, 1.0, 0.1, 0.1, CrossType.PMX, SelectionMethods.Method.TOURNAMENT);
 		Path solution = ga.solve();
 		
 		solution.print();
